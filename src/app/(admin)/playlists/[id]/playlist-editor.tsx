@@ -241,6 +241,7 @@ export function PlaylistEditor({
                   >
                     {items.map((item, index) => {
                       if (!item.ad) return null;
+                      const ad = item.ad;
 
                       return (
                         <Draggable
@@ -248,6 +249,7 @@ export function PlaylistEditor({
                           draggableId={item.id}
                           index={index}
                         >
+
                           {(provided, snapshot) => (
                             <div
                               ref={provided.innerRef}
@@ -275,24 +277,24 @@ export function PlaylistEditor({
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2">
                                   <p className="text-sm font-medium text-gray-900 truncate">
-                                    {item.ad.title}
+                                    {ad.title}
                                   </p>
                                   <Badge
-                                    variant={statusVariant[item.ad.status] ?? "secondary"}
+                                    variant={statusVariant[ad.status] ?? "secondary"}
                                   >
-                                    {item.ad.status}
+                                    {ad.status}
                                   </Badge>
                                 </div>
                                 <p className="text-xs text-gray-400">
-                                  {item.ad.advertiser?.business_name} ·{" "}
-                                  {item.ad.media_type} · {item.ad.duration_seconds}s
+                                  {ad.advertiser?.business_name} ·{" "}
+                                  {ad.media_type} · {ad.duration_seconds}s
                                 </p>
                               </div>
 
                               {/* Actions */}
                               <div className="flex items-center gap-1 flex-shrink-0">
                                 <Link
-                                  href={`/ads/${item.ad.id}`}
+                                  href={`/ads/${ad.id}`}
                                   className="p-1.5 text-gray-400 hover:text-gray-600 rounded"
                                   target="_blank"
                                 >
