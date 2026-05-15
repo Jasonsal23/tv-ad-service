@@ -114,7 +114,10 @@ export default async function AdsPage({
       ) : (
         <div className="space-y-3">
           {ads.map((ad) => {
-            const advertiser = ad.advertiser as { business_name: string } | null;
+            const rawAdv = ad.advertiser as unknown;
+            const advertiser = Array.isArray(rawAdv)
+              ? (rawAdv[0] as { business_name: string } | undefined) ?? null
+              : (rawAdv as { business_name: string } | null);
 
             return (
               <Card key={ad.id} className="hover:shadow-md transition-shadow">

@@ -68,45 +68,38 @@ export async function GET(
 
     const today = new Date().toISOString().split("T")[0];
 
-    // Filter to only active ads within date range
+    type AdRow = {
+      id: string;
+      title: string;
+      media_url: string;
+      media_type: string;
+      duration_seconds: number;
+      status: string;
+      start_date: string | null;
+      end_date: string | null;
+    };
+
     const activeItems = (items || [])
-      .filter((item) => {
-        const ad = item.ads as {
-          id: string;
-          title: string;
-          media_url: string;
-          media_type: string;
-          duration_seconds: number;
-          status: string;
-          start_date: string | null;
-          end_date: string | null;
-        } | null;
+      .map((item) => {
+        const raw = item.ads;
+        const ad: AdRow | null = Array.isArray(raw) ? (raw[0] ?? null) : (raw as AdRow | null);
+        return { ...item, ad };
+      })
+      .filter(({ ad }) => {
         if (!ad) return false;
         if (ad.status !== "active") return false;
         if (ad.start_date && ad.start_date > today) return false;
         if (ad.end_date && ad.end_date < today) return false;
         return true;
       })
-      .map((item) => {
-        const ad = item.ads as {
-          id: string;
-          title: string;
-          media_url: string;
-          media_type: string;
-          duration_seconds: number;
-          status: string;
-          start_date: string | null;
-          end_date: string | null;
-        };
-        return {
-          id: item.id,
-          ad_id: ad.id,
-          title: ad.title,
-          media_url: ad.media_url,
-          media_type: ad.media_type,
-          duration_seconds: ad.duration_seconds,
-        };
-      });
+      .map(({ id, ad }) => ({
+        id,
+        ad_id: ad!.id,
+        title: ad!.title,
+        media_url: ad!.media_url,
+        media_type: ad!.media_type,
+        duration_seconds: ad!.duration_seconds,
+      }));
 
     return NextResponse.json({
       items: activeItems,

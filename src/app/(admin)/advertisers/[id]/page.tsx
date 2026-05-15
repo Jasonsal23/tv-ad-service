@@ -54,9 +54,8 @@ export default async function AdvertiserDetailPage({
   const { advertiser, ads } = data;
 
   const totalImpressions = ads.reduce((sum, ad) => {
-    const count = Array.isArray(ad.impressions)
-      ? ad.impressions.length
-      : (ad.impressions as { count: number }[])?.[0]?.count ?? 0;
+    const raw = ad.impressions as unknown as { count: number }[] | null;
+    const count = Array.isArray(raw) ? (raw[0]?.count ?? 0) : 0;
     return sum + count;
   }, 0);
 
@@ -152,9 +151,8 @@ export default async function AdvertiserDetailPage({
           ) : (
             <div className="space-y-3">
               {ads.map((ad) => {
-                const impressionCount = Array.isArray(ad.impressions)
-                  ? ad.impressions.length
-                  : (ad.impressions as { count: number }[])?.[0]?.count ?? 0;
+                const raw2 = ad.impressions as unknown as { count: number }[] | null;
+                const impressionCount = Array.isArray(raw2) ? (raw2[0]?.count ?? 0) : 0;
 
                 return (
                   <div

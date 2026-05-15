@@ -72,7 +72,9 @@ export default async function PlaylistsPage() {
               ? playlist.playlist_items.length
               : (playlist.playlist_items as { count: number }[])?.[0]?.count ?? 0;
 
-            const assignedScreens = (playlist.screen_playlists as { screen: { name: string } }[] | null) ?? [];
+            const assignedScreens = ((playlist.screen_playlists as unknown as { screen: { name: string } | { name: string }[] }[]) ?? []).map((sp) => ({
+              screen: Array.isArray(sp.screen) ? sp.screen[0] : sp.screen,
+            })).filter((sp) => sp.screen);
 
             return (
               <Card key={playlist.id} className="hover:shadow-md transition-shadow">

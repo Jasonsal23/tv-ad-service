@@ -64,9 +64,8 @@ export default async function AdvertisersPage() {
       ) : (
         <div className="space-y-3">
           {advertisers.map((advertiser) => {
-            const adCount = Array.isArray(advertiser.ads)
-              ? advertiser.ads.length
-              : (advertiser.ads as { count: number }[])?.[0]?.count ?? 0;
+            const adsRaw = advertiser.ads as unknown as { count: number }[] | null;
+            const adCount = Array.isArray(adsRaw) ? (adsRaw[0]?.count ?? 0) : 0;
 
             return (
               <Card key={advertiser.id} className="hover:shadow-md transition-shadow">
