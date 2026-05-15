@@ -56,10 +56,20 @@ async function getPlaylist(id: string) {
     .in("status", ["active", "draft", "paused"])
     .order("title");
 
+  const normalizedItems = (items ?? []).map((item) => ({
+    ...item,
+    ad: Array.isArray(item.ad) ? (item.ad[0] ?? null) : item.ad,
+  }));
+
+  const normalizedAds = (availableAds ?? []).map((ad) => ({
+    ...ad,
+    advertiser: Array.isArray(ad.advertiser) ? (ad.advertiser[0] ?? null) : ad.advertiser,
+  }));
+
   return {
     playlist,
-    items: items ?? [],
-    availableAds: availableAds ?? [],
+    items: normalizedItems,
+    availableAds: normalizedAds,
   };
 }
 
