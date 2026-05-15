@@ -56,10 +56,16 @@ async function getPlaylist(id: string) {
     .in("status", ["active", "draft", "paused"])
     .order("title");
 
-  const normalizedItems = (items ?? []).map((item) => ({
-    ...item,
-    ad: Array.isArray(item.ad) ? (item.ad[0] ?? null) : item.ad,
-  }));
+  const normalizedItems = (items ?? []).map((item) => {
+    const ad = Array.isArray(item.ad) ? (item.ad[0] ?? null) : item.ad;
+    return {
+      ...item,
+      ad: ad ? {
+        ...ad,
+        advertiser: Array.isArray(ad.advertiser) ? (ad.advertiser[0] ?? null) : ad.advertiser,
+      } : null,
+    };
+  });
 
   const normalizedAds = (availableAds ?? []).map((ad) => ({
     ...ad,
