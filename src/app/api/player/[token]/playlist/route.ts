@@ -25,13 +25,15 @@ export async function GET(
     }
 
     // Find the active playlist assigned to this screen
-    const { data: screenPlaylist, error: spError } = await supabase
+    const { data: screenPlaylists } = await supabase
       .from("screen_playlists")
       .select("playlist_id")
       .eq("screen_id", screen.id)
-      .single();
+      .limit(1);
 
-    if (spError || !screenPlaylist) {
+    const screenPlaylist = screenPlaylists?.[0] ?? null;
+
+    if (!screenPlaylist) {
       return NextResponse.json(
         { items: [], screen: { id: screen.id, name: screen.name } },
         { status: 200 }
